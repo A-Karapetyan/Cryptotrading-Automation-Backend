@@ -59,6 +59,12 @@ namespace Cryptovalue_Automation
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cryptotrading_Automation v1"));
             }
 
+            app.UseCors(builder => builder
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(x => true)
+            .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
