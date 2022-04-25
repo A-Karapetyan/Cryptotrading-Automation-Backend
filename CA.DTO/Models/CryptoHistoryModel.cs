@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CA.DTO.Models
 {
-    public class CryptoListModel
+    public class CryptoHistoryModel
     {
-        public string Image { get; set; }
-        public string Name { get; set; }
-        public int Id { get; set; }
+        public DateTime Date { get; set; }
+        public float Price { get; set; }
     }
 }

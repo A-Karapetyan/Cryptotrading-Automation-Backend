@@ -13,6 +13,7 @@ namespace CA.DAL.Context
         public DbSet<Criteria> Criterias { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Symptom> Symptoms { get; set; }
+        public DbSet<History> Histories { get; set; }
         public DbSet<Cryptocurrency> Cryptocurrencies { get; set; }
         public DbSet<TEntity> WriterSet<TEntity>() where TEntity : class, IBaseEntity
         {
@@ -36,6 +37,14 @@ namespace CA.DAL.Context
                 .WithMany(u => u.Symptoms)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+                modelbuilder
+                .Entity<History>()
+                .HasOne(h => h.Cryptocurrency)
+                .WithMany(c => c.Histories)
+                .HasForeignKey(h => h.CryptocurrencyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

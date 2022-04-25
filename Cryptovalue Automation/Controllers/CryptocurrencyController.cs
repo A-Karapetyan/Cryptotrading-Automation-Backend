@@ -9,20 +9,24 @@ using System.Threading.Tasks;
 
 namespace Cryptovalue_Automation.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class CryptocurrencyController : BaseController
     {
-        private readonly ICryptocurrencyService currencyService;
-        public CryptocurrencyController(ICryptocurrencyService currencyService)
+        private readonly ICryptocurrencyService cryptoCurrencyService;
+        public CryptocurrencyController(ICryptocurrencyService cryptoCurrencyService)
         {
-            this.currencyService = currencyService;
+            this.cryptoCurrencyService = cryptoCurrencyService;
         }
 
         [HttpGet]
         public async Task<List<CryptoListModel>> GetAll()
         {
-            return await currencyService.GetAllCryptos();
+            return await cryptoCurrencyService.GetAllCryptos();
+        }
+
+        [HttpGet]
+        public CryptoDetailModel GetById([FromQuery] int id)
+        {
+            return cryptoCurrencyService.GetById(id);
         }
     }
 }

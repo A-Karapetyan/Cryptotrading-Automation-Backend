@@ -9,7 +9,7 @@ namespace CA.DTO.Models
 {
     public class CriteriaCreateModel
     {
-        public int Price { get; set; }
+        public float Price { get; set; }
         public int CryptoId { get; set; }
         public CriteriaOperationEnum Operation { get; set; }
     }

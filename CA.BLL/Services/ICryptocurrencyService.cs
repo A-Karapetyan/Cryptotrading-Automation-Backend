@@ -10,5 +10,6 @@ namespace CA.BLL.Services
     public interface ICryptocurrencyService
     {
         Task<List<CryptoListModel>> GetAllCryptos();
+        CryptoDetailModel GetById(int id);
     }
 }

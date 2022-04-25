@@ -20,7 +20,7 @@ namespace CA.Infrastucture.Helpers
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
-                await client.AuthenticateAsync("komulativ11@gmail.com", "AKKTa147789");
+                await client.AuthenticateAsync("crytpotradingautomation@gmail.com", "crytpotradingautomation111");
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
             }
