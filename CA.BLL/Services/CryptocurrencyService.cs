@@ -35,7 +35,8 @@ namespace CA.BLL.Services
             {
                 Image = crypto.Image,
                 Name = crypto.Name,
-                Price = crypto.Price
+                Price = crypto.Price,
+                Id = crypto.Id
             };
             
             if (crypto.Histories != null)

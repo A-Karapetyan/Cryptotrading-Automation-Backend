@@ -11,6 +11,7 @@ namespace CA.DTO.Models
         public string Image { get; set; }
         public string Name { get; set; }
         public float Price { get; set; }
+        public int Id { get; set; }
         public List<CryptoHistoryModel> Histories { get; set; }
     }
 }

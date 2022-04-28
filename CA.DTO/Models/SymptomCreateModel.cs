@@ -10,5 +10,6 @@ namespace CA.DTO.Models
     {
         public int UserId { get; set; }
         public List<CriteriaCreateModel> Criterias { get; set; }
+        public string Title { get; set; }
     }
 }
