@@ -20,6 +20,27 @@ namespace CA.BLL.Services
             _repository = repository;
         }
 
+        public async Task<string> Register(RegisterModel model)
+        {
+            var data = await _repository.Filter<TemporaryUser>(x => x.Id == model.Id && x.EmailVerified)
+                .FirstOrDefaultAsync();
+            
+            var existEmail = await _repository.Filter<User>(x => x.Email == data.Email).FirstOrDefaultAsync();
+            if (existEmail != null)
+                throw new ApplicationException("Email is already in use");
+
+            var user = await _repository.AddAsync(new User
+            {
+                Email = data.Email,
+                PasswordHashed = Utilities.HashPassword(model.Password),
+            });
+            await _repository.SaveChanges();
+
+            await _repository.DeleteAsync<TemporaryUser>(data.Id);
+            await _repository.SaveChanges();
+            return Utilities.Token(user.Id);
+        }
+
         public async Task<int> RegisterEmail(RegisterEmailModel model)
         {
             model.Email = model.Email.ToLower();

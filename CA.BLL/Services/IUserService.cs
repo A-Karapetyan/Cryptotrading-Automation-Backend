@@ -7,5 +7,6 @@ namespace CA.BLL.Services
     {
         Task<int> RegisterEmail(RegisterEmailModel model);
         Task<bool> VerifyEmail(VerifyModel model);
+        object CheckPersonById(int v);
     }
 }
