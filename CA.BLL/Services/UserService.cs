@@ -20,6 +20,19 @@ namespace CA.BLL.Services
             _repository = repository;
         }
 
+        public async Task<string> Login(LoginModel model)
+        {
+            var user = await _repository.Filter<User>(u => u.Email == model.Email).FirstOrDefaultAsync()
+                ?? throw new ApplicationException("Email is not registred");
+
+            if (!Utilities.VerifyHashedPassword(user.PasswordHashed, model.Password))
+            {
+                throw new ApplicationException("Password is incorrect");
+            }
+
+            return Utilities.Token(user.Id);
+        }
+
         public async Task<User> CheckPersonById(int id)
         {
             return await _repository.Filter<User>(u => u.Id == id).FirstOrDefaultAsync();

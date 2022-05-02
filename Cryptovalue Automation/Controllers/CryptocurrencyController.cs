@@ -1,5 +1,6 @@
 ﻿using CA.BLL.Services;
 using CA.DTO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,7 @@ namespace Cryptovalue_Automation.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public CryptoDetailModel GetById([FromQuery] int id)
         {
             return cryptoCurrencyService.GetById(id);

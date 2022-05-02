@@ -1,6 +1,7 @@
 ﻿using ABM.DAL.Repository;
 using CA.DAL.Entity;
 using CA.DTO.Models;
+using CA.Infrastucture.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,11 @@ namespace CA.BLL.Services
             }
 
             return result;
+        }
+
+        public async void UpdateCryptoData()
+        {
+          var res = await HttpClientHelper.GetRequest<CryptosListResModel>("https://api.coinbase.com/v2/exchange-rates?currency=USD");
         }
     }
 }

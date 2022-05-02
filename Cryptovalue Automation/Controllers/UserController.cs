@@ -1,5 +1,6 @@
 ﻿using CA.BLL.Services;
 using CA.DTO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,14 +21,26 @@ namespace Cryptovalue_Automation.Controllers
         }
 
         [HttpPost]
-        public Task<bool> VerifyEmail([FromBody] VerifyModel model)
+        public async Task<bool> VerifyEmail([FromBody] VerifyModel model)
         {
-            return userService.VerifyEmail(model);
+            return await userService.VerifyEmail(model);
         }
         [HttpPost]
-        public Task<int> RegisterEmail([FromBody]  RegisterEmailModel model)
+        public async Task<int> RegisterEmail([FromBody]  RegisterEmailModel model)
         {
-            return userService.RegisterEmail(model);
+            return await userService.RegisterEmail(model);
+        }
+
+        [HttpPost]
+        public async Task<string> Register([FromBody] RegisterModel model)
+        {
+            return await userService.Register(model);
+        }
+
+        [HttpPost]
+        public async Task<string> Login([FromBody] LoginModel model)
+        {
+            return await userService.Login(model);
         }
     }
 }
