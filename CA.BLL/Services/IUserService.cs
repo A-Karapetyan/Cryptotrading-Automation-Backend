@@ -1,4 +1,5 @@
-﻿using CA.DTO.Models;
+﻿using CA.DAL.Entity;
+using CA.DTO.Models;
 using System.Threading.Tasks;
 
 namespace CA.BLL.Services
@@ -7,6 +8,6 @@ namespace CA.BLL.Services
     {
         Task<int> RegisterEmail(RegisterEmailModel model);
         Task<bool> VerifyEmail(VerifyModel model);
-        object CheckPersonById(int v);
+        Task<User> CheckPersonById(int id);
     }
 }

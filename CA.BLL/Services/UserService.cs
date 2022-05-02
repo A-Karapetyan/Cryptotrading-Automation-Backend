@@ -20,6 +20,11 @@ namespace CA.BLL.Services
             _repository = repository;
         }
 
+        public async Task<User> CheckPersonById(int id)
+        {
+            return await _repository.Filter<User>(u => u.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task<string> Register(RegisterModel model)
         {
             var data = await _repository.Filter<TemporaryUser>(x => x.Id == model.Id && x.EmailVerified)
