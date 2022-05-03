@@ -71,7 +71,7 @@ namespace CA.BLL.Services
                await _repository.HardRemove<User>(existTempUser.Id);
 
             var code = Utilities.KeyGenerator(6);
-            var newUser = _repository.CreateAsync(new TemporaryUser
+            var newUser = await _repository.CreateAsync(new TemporaryUser
             {
                 Email = model.Email,
                 EmailCode = Utilities.HashPassword(code),

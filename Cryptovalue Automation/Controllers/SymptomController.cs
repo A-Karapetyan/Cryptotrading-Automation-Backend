@@ -27,5 +27,11 @@ namespace Cryptovalue_Automation.Controllers
         {
             return symptomService.EditSymtom(model);
         }
+
+        [HttpPost]
+        public List<SymptomResponseModel> GetSymptomsByUserId([FromQuery] int userId)
+        {
+            return symptomService.GetSymptomsByUserId(userId);
+        }
     }
 }

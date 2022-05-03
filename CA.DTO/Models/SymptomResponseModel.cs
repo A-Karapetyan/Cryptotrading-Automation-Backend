@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CA.DTO.Models
 {
-    public class CryptoHistoryModel
+    public class SymptomResponseModel
     {
-        public DateTime Date { get; set; }
-        public decimal Price { get; set; }
+        public List<CriteriaResponseModel> Criterias { get; set; }
+        public string Title { get; set; }
     }
 }

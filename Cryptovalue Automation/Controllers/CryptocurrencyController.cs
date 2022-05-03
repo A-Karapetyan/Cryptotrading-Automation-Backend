@@ -1,5 +1,6 @@
 ﻿using CA.BLL.Services;
 using CA.DTO.Models;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,19 @@ namespace Cryptovalue_Automation.Controllers
         public CryptoDetailModel GetById([FromQuery] int id)
         {
             return cryptoCurrencyService.GetById(id);
+        }
+
+        [HttpGet]
+        public async Task<bool> UpdateCryptoData()
+        {
+            return await cryptoCurrencyService.UpdateCryptoData();
+        }
+
+        [HttpGet]
+        public async Task<bool> UpdateCryptoJob()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateCryptoData(), Cron.MinuteInterval(1));
+            return true;
         }
     }
 }

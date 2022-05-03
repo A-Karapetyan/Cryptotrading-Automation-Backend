@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -248,6 +249,7 @@ namespace CA.DTO.Models
         public string ICP { get; set; }
         public string NKN { get; set; }
         public string OGN { get; set; }
+        [JsonProperty("1INCH")]
         public string _1INCH { get; set; }
         public string USDT { get; set; }
         public string FORTH { get; set; }

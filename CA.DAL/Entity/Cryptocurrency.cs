@@ -15,7 +15,7 @@ namespace CA.DAL.Entity
         public string Image { get; set; }
         public bool Published { get; set; }
         public string Currency { get; set; }
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         public int? MainCurrencyId { get; set; }
         public ICollection<History> Histories { get; set; }
     }

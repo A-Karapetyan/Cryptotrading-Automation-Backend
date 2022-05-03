@@ -11,5 +11,6 @@ namespace CA.BLL.Services
     {
         Task<List<CryptoListModel>> GetAllCryptos();
         CryptoDetailModel GetById(int id);
+        Task<bool> UpdateCryptoData();
     }
 }

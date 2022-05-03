@@ -9,7 +9,7 @@ namespace CA.DAL.Entity
 {
     public class Criteria : BaseEntity
     {
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         public Cryptocurrency Crypto { get; set; }
         public int CryptoId { get; set; }
         public Symptom Symptom { get; set; }

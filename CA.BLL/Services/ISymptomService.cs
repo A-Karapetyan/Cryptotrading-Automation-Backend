@@ -11,5 +11,6 @@ namespace CA.BLL.Services
     {
         bool AddSymptom(SymptomCreateModel model);
         bool EditSymtom(SymptomCreateModel model);
+        List<SymptomResponseModel> GetSymptomsByUserId(int userId);
     }
 }

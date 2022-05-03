@@ -44,7 +44,6 @@ namespace CA.DAL.Context
                 .WithMany(c => c.Histories)
                 .HasForeignKey(h => h.CryptocurrencyId)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }
