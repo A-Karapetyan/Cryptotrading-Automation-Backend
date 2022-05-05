@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CA.DTO.Models
 {
-    public class CryptoHistoryModel
+    public class LoginTokenModel
     {
-        public DateTime Date { get; set; }
-        public decimal? Price { get; set; }
+        public string Email { get; set; }
+        public string Token { get; set; }
     }
 }

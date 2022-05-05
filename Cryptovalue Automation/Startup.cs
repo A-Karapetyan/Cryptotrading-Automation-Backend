@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.Swagger;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +35,34 @@ namespace Cryptovalue_Automation
             var secretKey = "mysupersecret_secretkey!PT";
 
             var key = Encoding.ASCII.GetBytes(secretKey);
+
+            services.AddSwaggerGen(setup =>
+            {
+                // Include 'SecurityScheme' to use JWT Authentication
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                   { jwtSecurityScheme, Array.Empty<string>() }
+                 });
+            });
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,6 +137,7 @@ namespace Cryptovalue_Automation
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
             app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>

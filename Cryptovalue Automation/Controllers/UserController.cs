@@ -25,6 +25,7 @@ namespace Cryptovalue_Automation.Controllers
         {
             return await userService.VerifyEmail(model);
         }
+
         [HttpPost]
         public async Task<int> RegisterEmail([FromBody]  RegisterEmailModel model)
         {
@@ -32,13 +33,13 @@ namespace Cryptovalue_Automation.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Register([FromBody] RegisterModel model)
+        public async Task<LoginTokenModel> Register([FromBody] RegisterModel model)
         {
             return await userService.Register(model);
         }
 
         [HttpPost]
-        public async Task<string> Login([FromBody] LoginModel model)
+        public async Task<LoginTokenModel> Login([FromBody] LoginModel model)
         {
             return await userService.Login(model);
         }

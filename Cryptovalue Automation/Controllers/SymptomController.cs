@@ -1,5 +1,6 @@
 ﻿using CA.BLL.Services;
 using CA.DTO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,21 @@ namespace Cryptovalue_Automation.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<bool> AddSymptom([FromBody]SymptomCreateModel model)
         {
             return symptomService.AddSymptom(model);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<bool> EditSymtom([FromBody] SymptomCreateModel model)
         {
             return symptomService.EditSymtom(model);
         }
 
         [HttpPost]
+        [Authorize]
         public List<SymptomResponseModel> GetSymptomsByUserId([FromQuery] int userId)
         {
             return symptomService.GetSymptomsByUserId(userId);

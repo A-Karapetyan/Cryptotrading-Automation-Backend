@@ -63,7 +63,6 @@ namespace CA.BLL.Services
                 var res = await HttpClientHelper.GetRequest<CryptosListResModel>("https://api.coinbase.com/v2/exchange-rates?currency=USD");
                 var cryptocurrencies = await repository.GetAll<Cryptocurrency>().Include(c => c.Histories).Include(c => c.Criterias).ThenInclude(cr => cr.Symptom).ToListAsync();
                 var currencies = res.data.rates;
-                var users = repository.GetAll<User>().Include(u => u.Symptoms).ToList();
 
                 foreach (var cryptocurrency in cryptocurrencies)
                 {
@@ -76,7 +75,7 @@ namespace CA.BLL.Services
                     {
                         price = currencies.GetType().GetProperties().Where(p => p.Name == cryptocurrency.Currency).FirstOrDefault().GetValue(currencies);
                     }
-                    cryptocurrency.Price = 1 / Convert.ToDecimal(price.ToString().Replace(".", ","));
+                    cryptocurrency.Price = 1 / Convert.ToDecimal(price.ToString());
 
                     History history = new History
                     {
@@ -89,50 +88,16 @@ namespace CA.BLL.Services
 
                 await repository.SaveChanges();
 
-                foreach (var user in users)
+                var symptoms = repository.GetAll<Symptom>().Include(s => s.Criterias).ThenInclude(cr => cr.Crypto).Where(c => c.Criterias.Any(c => (c.Crypto.Price > c.Price && c.Operation == CriteriaOperationEnum.Greater) || (c.Crypto.Price < c.Price && c.Operation == CriteriaOperationEnum.Lower))).ToList();
+
+                foreach (var symptom in symptoms)
                 {
-                    foreach (var symptom in user.Symptoms)
-                    {
-                        if (CheckSymptom(symptom, currencies))
-                        {
-                            await new MailHelper().SendEmail(user.Email, "The symptom you created is now valid", $"Title <b>{symptom.Title}</b>");
-                        }
-                    }
+                    await new MailHelper().SendEmail(symptom.User.Email, "The symptom you created is now valid", $"Title <b>{symptom.Title}</b>");
                 }
             }
             catch (Exception e)
             {
                 return false;
-            }
-
-            return true;
-        }
-
-        private bool CheckSymptom(Symptom symptom, Rates currencies)
-        {
-            foreach (var criteria in symptom.Criterias)
-            {
-                bool isValid = true;
-
-                object price;
-
-                if (criteria.Crypto.Name.ToUpper().Contains("1INCH"))
-                {
-                    price = currencies.GetType().GetProperties().Where(p => p.Name == "_1INCH").FirstOrDefault().GetValue(currencies);
-                }
-                else
-                {
-                    price = currencies.GetType().GetProperties().Where(p => criteria.Crypto.Name.Contains(p.Name)).FirstOrDefault().GetValue(currencies);
-                }
-
-                if ((criteria.Price > Convert.ToDecimal(price) && criteria.Operation == CriteriaOperationEnum.Greater) || (criteria.Price < Convert.ToDecimal(price) && criteria.Operation == CriteriaOperationEnum.Lower))
-                {
-                    continue;
-                } else
-                {
-                    return false;
-                }
-
             }
 
             return true;

@@ -20,7 +20,7 @@ namespace CA.BLL.Services
             _repository = repository;
         }
 
-        public async Task<string> Login(LoginModel model)
+        public async Task<LoginTokenModel> Login(LoginModel model)
         {
             var user = await _repository.Filter<User>(u => u.Email == model.Email).FirstOrDefaultAsync()
                 ?? throw new ApplicationException("Email is not registred");
@@ -30,7 +30,12 @@ namespace CA.BLL.Services
                 throw new ApplicationException("Password is incorrect");
             }
 
-            return Utilities.Token(user.Id);
+            var result = new LoginTokenModel();
+
+            result.Email = user.Email;
+            result.Token = Utilities.Token(user.Id);
+
+            return result;
         }
 
         public async Task<User> CheckPersonById(int id)
@@ -38,7 +43,7 @@ namespace CA.BLL.Services
             return await _repository.Filter<User>(u => u.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<string> Register(RegisterModel model)
+        public async Task<LoginTokenModel> Register(RegisterModel model)
         {
             var data = await _repository.Filter<TemporaryUser>(x => x.Id == model.Id && x.EmailVerified)
                 .FirstOrDefaultAsync();
@@ -56,7 +61,13 @@ namespace CA.BLL.Services
 
             await _repository.DeleteAsync<TemporaryUser>(data.Id);
             await _repository.SaveChanges();
-            return Utilities.Token(user.Id);
+
+            var result = new LoginTokenModel();
+
+            result.Email = user.Email;
+            result.Token = Utilities.Token(user.Id);
+
+            return result;
         }
 
         public async Task<int> RegisterEmail(RegisterEmailModel model)

@@ -11,6 +11,6 @@ namespace CA.DAL.Entity
         public int CryptocurrencyId { get; set; }
         public Cryptocurrency Cryptocurrency { get; set; }
         public DateTime Date { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
     }
 }
