@@ -10,6 +10,7 @@ namespace CA.BLL.Services
         Task<bool> VerifyEmail(VerifyModel model);
         Task<User> CheckPersonById(int id);
         Task<LoginTokenModel> Register(RegisterModel model);
+        Task<string> GetUserEmail(int userId);
         Task<LoginTokenModel> Login(LoginModel model);
     }
 }

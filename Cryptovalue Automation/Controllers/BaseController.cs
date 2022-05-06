@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 namespace Cryptovalue_Automation.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class BaseController : ControllerBase
     {
+        protected int GetUserIdFromToken()
+        {
+            int.TryParse(Request.HttpContext.User.FindFirst("personId").Value, out var id);
 
+            return id;
+        }
     }
 }

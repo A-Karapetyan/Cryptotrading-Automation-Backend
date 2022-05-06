@@ -9,8 +9,9 @@ namespace CA.BLL.Services
 {
     public interface ISymptomService
     {
-        bool AddSymptom(SymptomCreateModel model);
-        bool EditSymtom(SymptomCreateModel model);
+        Task<string> AddSymptom(SymptomCreateModel model, int userId);
+        Task<string> EditSymptomTitle(EditSymptomTitleModel model);
+        Task<string> DeleteSymptom(int symptomId);
         List<SymptomResponseModel> GetSymptomsByUserId(int userId);
     }
 }

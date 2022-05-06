@@ -9,33 +9,50 @@ using System.Threading.Tasks;
 
 namespace Cryptovalue_Automation.Controllers
 {
+    [Route("api/[controller]/[action]")]
     public class SymptomController : BaseController
     {
         private readonly ISymptomService symptomService;
-        public SymptomController(ISymptomService symptomService)
+        private readonly ICriteriaService criteriaService;
+        public SymptomController(ISymptomService symptomService, ICriteriaService criteriaService)
         {
             this.symptomService = symptomService;
+            this.criteriaService = criteriaService;
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<bool> AddSymptom([FromBody]SymptomCreateModel model)
+        public async Task<string> AddSymptom([FromBody] SymptomCreateModel model)
         {
-            return symptomService.AddSymptom(model);
+            return await symptomService.AddSymptom(model, GetUserIdFromToken());
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<bool> EditSymtom([FromBody] SymptomCreateModel model)
+        public async Task<string> EditSymptomTitle([FromBody] EditSymptomTitleModel model)
         {
-            return symptomService.EditSymtom(model);
+            return await symptomService.EditSymptomTitle(model);
         }
 
         [HttpPost]
         [Authorize]
-        public List<SymptomResponseModel> GetSymptomsByUserId([FromQuery] int userId)
+        public async Task<string> EditCriteria([FromBody] CriteriaEditModel model)
         {
-            return symptomService.GetSymptomsByUserId(userId);
+            return await criteriaService.EditCriteria(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<string> DeleteSymptom([FromQuery] int id)
+        {
+            return await symptomService.DeleteSymptom(id);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public List<SymptomResponseModel> GetUserSymptoms()
+        {
+            return symptomService.GetSymptomsByUserId(GetUserIdFromToken());
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Cryptovalue_Automation.Controllers
 {
     [ApiController]
+    [Route("api/[controller]/[action]")]
     public class UserController : BaseController
     {
         private readonly IUserService userService;
@@ -42,6 +43,13 @@ namespace Cryptovalue_Automation.Controllers
         public async Task<LoginTokenModel> Login([FromBody] LoginModel model)
         {
             return await userService.Login(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<string> GetUserEmail()
+        {
+            return await userService.GetUserEmail(GetUserIdFromToken());
         }
     }
 }

@@ -30,9 +30,9 @@ namespace CA.BLL.Services
             }).ToListAsync();
         }
 
-        public CryptoDetailModel GetById(int id)
+        public async Task<CryptoDetailModel> GetById(int id)
         {
-            var crypto = repository.GetByIdAsync<Cryptocurrency>(id).Result;
+            var crypto = await repository.Filter<Cryptocurrency>(c => c.Id == id).Include(cr => cr.Histories).FirstOrDefaultAsync();
             var result = new CryptoDetailModel
             {
                 Image = crypto.Image,
@@ -43,14 +43,18 @@ namespace CA.BLL.Services
 
             if (crypto.Histories != null)
             {
+                List<CryptoHistoryModel> histories = new List<CryptoHistoryModel>();
+
                 foreach (var hy in crypto.Histories)
                 {
-                    result.Histories.Add(new CryptoHistoryModel
+                    histories.Add(new CryptoHistoryModel
                     {
                         Date = hy.Date,
                         Price = hy.Price
                     });
                 }
+
+                result.Histories = histories;
             }
 
             return result;
@@ -88,7 +92,8 @@ namespace CA.BLL.Services
 
                 await repository.SaveChanges();
 
-                var symptoms = repository.GetAll<Symptom>().Include(s => s.Criterias).ThenInclude(cr => cr.Crypto).Where(c => c.Criterias.Any(c => (c.Crypto.Price > c.Price && c.Operation == CriteriaOperationEnum.Greater) || (c.Crypto.Price < c.Price && c.Operation == CriteriaOperationEnum.Lower))).ToList();
+                var symptoms = repository.GetAll<Symptom>().Include(s => s.User).Include(s => s.Criterias).ThenInclude(cr => cr.Crypto).Where(c => 
+                c.Criterias.Any(c => (c.Crypto.Price > c.Price && c.Operation == CriteriaOperationEnum.Greater) || (c.Crypto.Price < c.Price && c.Operation == CriteriaOperationEnum.Lower))).ToList();
 
                 foreach (var symptom in symptoms)
                 {

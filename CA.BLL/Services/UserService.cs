@@ -70,6 +70,12 @@ namespace CA.BLL.Services
             return result;
         }
 
+        public async Task<string> GetUserEmail(int userId)
+        {
+            var user = await _repository.Filter<User>(u => u.Id == userId).FirstOrDefaultAsync();
+            return user.Email;
+        }
+
         public async Task<int> RegisterEmail(RegisterEmailModel model)
         {
             model.Email = model.Email.ToLower();

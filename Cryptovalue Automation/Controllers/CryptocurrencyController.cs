@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cryptovalue_Automation.Controllers
 {
+    [Route("api/[controller]/[action]")]
     public class CryptocurrencyController : BaseController
     {
         private readonly ICryptocurrencyService cryptoCurrencyService;
@@ -27,9 +28,9 @@ namespace Cryptovalue_Automation.Controllers
 
         [HttpGet]
         [Authorize]
-        public CryptoDetailModel GetById([FromQuery] int id)
+        public async Task<CryptoDetailModel> GetById([FromQuery] int id)
         {
-            return cryptoCurrencyService.GetById(id);
+            return await cryptoCurrencyService.GetById(id);
         }
 
         [HttpGet]
@@ -41,7 +42,7 @@ namespace Cryptovalue_Automation.Controllers
         [HttpGet]
         public async Task<bool> UpdateCryptoJob()
         {
-            RecurringJob.AddOrUpdate(() => UpdateCryptoData(), Cron.MinuteInterval(1));
+            RecurringJob.AddOrUpdate(() => UpdateCryptoData(), Cron.MinuteInterval(10));
             return true;
         }
     }

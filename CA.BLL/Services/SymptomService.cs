@@ -1,6 +1,7 @@
 ﻿using ABM.DAL.Repository;
 using CA.DAL.Entity;
 using CA.DTO.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,67 +18,79 @@ namespace CA.BLL.Services
             this.repository = repository;
             this.criteriaService = criteriaService;
         }
-        public bool AddSymptom(SymptomCreateModel model)
+        public async Task<string> AddSymptom(SymptomCreateModel model, int userId)
         {
             try
             {
+                Symptom symptom = new Symptom();
+                symptom.Title = model.Title;
+                symptom.UserId = userId;
+
+                await repository.AddAsync(symptom);
+                await repository.SaveChanges();
+
                 foreach (var item in model.Criterias)
                 {
-                    CriteriaCreateModel criteriaModel = new CriteriaCreateModel();
+                    Criteria criteriaModel = new Criteria();
                     criteriaModel.CryptoId = item.CryptoId;
                     criteriaModel.Price = item.Price;
                     criteriaModel.Operation = item.Operation;
-                    criteriaService.AddCriteria(criteriaModel);
+                    criteriaModel.SymptomId = symptom.Id;
+                    await repository.AddAsync(criteriaModel);
                 }
 
-                Symptom symptom = new Symptom();
-
-                symptom.UserId = model.UserId;
-
-                repository.AddAsync(symptom);
+                await repository.SaveChanges();
             }
             catch (Exception e)
             {
-                return false;
+                return e.Message;
             }
 
-            return true;
+            return "ok";
         }
 
-        public bool EditSymtom(SymptomCreateModel model)
+        public async Task<string> EditSymptomTitle(EditSymptomTitleModel model)
         {
             try
             {
-                foreach (var item in model.Criterias)
+                Symptom symptom = repository.Filter<Symptom>(s => s.Id == model.SymptomId).FirstOrDefault();
+
+                if (symptom != null)
                 {
-                    CriteriaCreateModel criteriaModel = new CriteriaCreateModel();
-                    criteriaModel.CryptoId = item.CryptoId;
-                    criteriaModel.Price = item.Price;
-                    criteriaModel.Operation = item.Operation;
-                    criteriaService.AddCriteria(criteriaModel);
+                    symptom.Title = model.Title;
                 }
 
-                Symptom symptom = new Symptom();
-
-                symptom.UserId = model.UserId;
-
-                repository.Update(symptom);
-            } 
-            catch(Exception e)
-            {
-                return false;
+                await repository.SaveChanges();
             }
-         
+            catch (Exception e)
+            {
+                return e.Message;
+            }
 
-            return true;
+            return "ok";
+        }
+
+        public async Task<string> DeleteSymptom(int symptomId)
+        {
+            try
+            {
+                await repository.HardRemove<Symptom>(symptomId);
+                await repository.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Symptom does not exist");
+            }
+
+            return "ok";
         }
 
         public List<SymptomResponseModel> GetSymptomsByUserId(int userId)
         {
             List<SymptomResponseModel> result = new List<SymptomResponseModel>();
-            IQueryable<Symptom> symptoms = repository.GetAllAsNoTracking<Symptom>(s => s.UserId == userId);
+            var user = repository.Filter<User>(u => u.Id == userId).Include(us => us.Symptoms).ThenInclude(s => s.Criterias).ThenInclude(c => c.Crypto).FirstOrDefault();
 
-            foreach(var symptom in symptoms)
+            foreach(var symptom in user.Symptoms)
             {
                 SymptomResponseModel symptomModel = new SymptomResponseModel();
                 List<CriteriaResponseModel> criterias = new List<CriteriaResponseModel>();
@@ -90,14 +103,17 @@ namespace CA.BLL.Services
 
                     model.Price = criteria.Price;
                     model.Operation = criteria.Operation;
+                    model.Id = criteria.Id;
                     model.Crypto.Image = criteria.Crypto.Image;
                     model.Crypto.Name = criteria.Crypto.Name;
+                    model.Crypto.Id = criteria.Crypto.Id;
 
                     criterias.Add(model);
                 }
 
                 symptomModel.Criterias = criterias;
                 symptomModel.Title = symptom.Title;
+                symptomModel.Id = symptom.Id;
                 result.Add(symptomModel);
             }
 

@@ -5,6 +5,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,7 @@ namespace Cryptovalue_Automation
                 {
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
-                    Name = "Authorization",
+                    Name = "Authentication",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
@@ -53,7 +54,7 @@ namespace Cryptovalue_Automation
                         Id = JwtBearerDefaults.AuthenticationScheme,
                         Type = ReferenceType.SecurityScheme
                     }
-                };
+                };  
 
                 setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
@@ -65,7 +66,7 @@ namespace Cryptovalue_Automation
 
             services.AddAuthentication(x =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;   
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
@@ -136,8 +137,8 @@ namespace Cryptovalue_Automation
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>

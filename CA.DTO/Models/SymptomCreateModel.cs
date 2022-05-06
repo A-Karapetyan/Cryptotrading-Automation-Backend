@@ -8,8 +8,8 @@ namespace CA.DTO.Models
 {
     public class SymptomCreateModel
     {
-        public int UserId { get; set; }
         public List<CriteriaCreateModel> Criterias { get; set; }
         public string Title { get; set; }
+        public int Id { get; set; }
     }
 }

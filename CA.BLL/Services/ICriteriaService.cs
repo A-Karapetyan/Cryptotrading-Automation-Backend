@@ -10,5 +10,6 @@ namespace CA.BLL.Services
     public interface ICriteriaService
     {
         void AddCriteria(CriteriaCreateModel model);
+        Task<string> EditCriteria(CriteriaEditModel model);
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CA.DTO.Models
 {
-    public class SymptomResponseModel
+    public class EditSymptomTitleModel
     {
-        public List<CriteriaResponseModel> Criterias { get; set; }
+        public int SymptomId { get; set; }
         public string Title { get; set; }
-        public int Id { get; set; }
     }
 }

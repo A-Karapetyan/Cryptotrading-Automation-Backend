@@ -12,5 +12,6 @@ namespace CA.DTO.Models
         public decimal Price { get; set; }
         public CryptoListModel Crypto { get; set; }
         public CriteriaOperationEnum Operation { get; set; }
+        public int Id { get; set; }
     }
 }

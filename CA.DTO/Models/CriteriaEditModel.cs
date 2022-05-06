@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace CA.DTO.Models
 {
-    public class CriteriaCreateModel
+    public class CriteriaEditModel
     {
         public decimal Price { get; set; }
         public int CryptoId { get; set; }
         public CriteriaOperationEnum Operation { get; set; }
-        public int SymptomId { get; set; }
+        public int CriteriaId { get; set; }
     }
 }
