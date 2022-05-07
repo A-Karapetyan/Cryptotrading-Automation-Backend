@@ -45,13 +45,20 @@ namespace CA.BLL.Services
             {
                 List<CryptoHistoryModel> histories = new List<CryptoHistoryModel>();
 
+                int i = 0;
                 foreach (var hy in crypto.Histories)
                 {
+                    if (i > 15)
+                    {
+                        break;
+                    }
+                     
                     histories.Add(new CryptoHistoryModel
                     {
                         Date = hy.Date,
                         Price = hy.Price
                     });
+                    i++;
                 }
 
                 result.Histories = histories;
@@ -88,16 +95,22 @@ namespace CA.BLL.Services
                     };
 
                     cryptocurrency.Histories.Add(history);
+
                 }
 
                 await repository.SaveChanges();
 
-                var symptoms = repository.GetAll<Symptom>().Include(s => s.User).Include(s => s.Criterias).ThenInclude(cr => cr.Crypto).Where(c => 
+                var symptoms = repository.GetAll<Symptom>().Include(s => s.User).Include(s => s.Criterias).ThenInclude(cr => cr.Crypto).Where(c =>
                 c.Criterias.Any(c => (c.Crypto.Price > c.Price && c.Operation == CriteriaOperationEnum.Greater) || (c.Crypto.Price < c.Price && c.Operation == CriteriaOperationEnum.Lower))).ToList();
 
                 foreach (var symptom in symptoms)
                 {
-                    await new MailHelper().SendEmail(symptom.User.Email, "The symptom you created is now valid", $"Title <b>{symptom.Title}</b>");
+                    string emailCriterias = "<br/> ";
+                    foreach (var criteria in symptom.Criterias)
+                    {
+                        emailCriterias += criteria.Crypto.Name + " " + (criteria.Operation == CriteriaOperationEnum.Greater ? ">" : "<") + " " + criteria.Price + " $ <br/> ";
+                    }
+                    await new MailHelper().SendEmail(symptom.User.Email, "Cryptotrading Automation", $"<h3>The symptom you created is now valid</h3> <br/> Title: <b>{symptom.Title}</b>" + emailCriterias);
                 }
             }
             catch (Exception e)
