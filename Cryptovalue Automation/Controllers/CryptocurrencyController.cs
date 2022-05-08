@@ -15,9 +15,11 @@ namespace Cryptovalue_Automation.Controllers
     public class CryptocurrencyController : BaseController
     {
         private readonly ICryptocurrencyService cryptoCurrencyService;
-        public CryptocurrencyController(ICryptocurrencyService cryptoCurrencyService)
+        private readonly IHistoryService hisoryService;
+        public CryptocurrencyController(ICryptocurrencyService cryptoCurrencyService, IHistoryService hisoryService)
         {
             this.cryptoCurrencyService = cryptoCurrencyService;
+            this.hisoryService = hisoryService;
         }
 
         [HttpGet]
@@ -44,6 +46,12 @@ namespace Cryptovalue_Automation.Controllers
         {
             RecurringJob.AddOrUpdate(() => UpdateCryptoData(), Cron.MinuteInterval(10));
             return true;
+        }
+
+        [HttpGet]
+        public async Task<bool> DeleteAllHistories()
+        {
+            return await hisoryService.DeleteAll();
         }
     }
 }

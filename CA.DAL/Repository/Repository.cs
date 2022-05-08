@@ -177,9 +177,9 @@ namespace ABM.DAL.Repository
                 db.Set<T>().RemoveRange(entityToRemove);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 

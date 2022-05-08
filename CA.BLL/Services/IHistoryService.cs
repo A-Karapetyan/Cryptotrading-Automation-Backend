@@ -8,6 +8,6 @@ namespace CA.BLL.Services
 {
     public interface IHistoryService
     {
-
+        Task<bool> DeleteAll();
     }
 }

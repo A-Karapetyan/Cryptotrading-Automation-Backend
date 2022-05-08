@@ -15,9 +15,11 @@ namespace CA.BLL.Services
     public class CryptocurrencyService : ICryptocurrencyService
     {
         private readonly IRepository repository;
-        public CryptocurrencyService(IRepository repository)
+        private readonly IHistoryService historyService;
+        public CryptocurrencyService(IRepository repository, IHistoryService historyService)
         {
             this.repository = repository;
+            this.historyService = historyService;
         }
 
         public async Task<List<CryptoListModel>> GetAllCryptos()
@@ -88,13 +90,31 @@ namespace CA.BLL.Services
                     }
                     cryptocurrency.Price = 1 / Convert.ToDecimal(price.ToString());
 
+                    var now = DateTime.Now;
+
                     History history = new History
                     {
-                        Date = DateTime.Now,
+                        Date = now,
                         Price = cryptocurrency.Price
                     };
 
-                    cryptocurrency.Histories.Add(history);
+                    History lastHistory = cryptocurrency.Histories.LastOrDefault();
+
+                    if (lastHistory != null)
+                    {
+                       if (lastHistory.Date.Day < now.Day || lastHistory.Date.Month < now.Month || lastHistory.Date.Year < now.Year)
+                       {
+                           await historyService.DeleteAll();
+                       }
+                    }
+
+                    if (lastHistory != null && lastHistory.Price != history.Price)
+                    {
+                        cryptocurrency.Histories.Add(history);
+                    } else
+                    {
+                        cryptocurrency.Histories.Add(history);
+                    }
 
                 }
 
@@ -110,7 +130,7 @@ namespace CA.BLL.Services
                     {
                         emailCriterias += criteria.Crypto.Name + " " + (criteria.Operation == CriteriaOperationEnum.Greater ? ">" : "<") + " " + criteria.Price + " $ <br/> ";
                     }
-                    await new MailHelper().SendEmail(symptom.User.Email, "Cryptotrading Automation", $"<h3>The symptom you created is now valid</h3> <br/> Title: <b>{symptom.Title}</b>" + emailCriterias);
+                    await new MailHelper().SendEmail(symptom.User.Email, $"Cryptotrading Automation", $"<h3>The symptom <b style='color: red'>{symptom.Title}</b> is now valid</h3> <br/> Title: <b>{symptom.Title}</b> <br/>" + emailCriterias);
                 }
             }
             catch (Exception e)
